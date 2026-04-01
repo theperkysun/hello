@@ -1,0 +1,28 @@
+:root {
+  --bg: #fffaf5;
+  --surface: #ffffff;
+  --primary: #ff7a28;
+  --text: #1f2937;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: Inter, system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+.shell { max-width: 1100px; margin: 0 auto; padding: 1rem; }
+.topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
+.brand { font-weight: 800; color: var(--primary); font-size: 1.5rem; }
+.navlink { margin-left: 1rem; text-decoration: none; color: inherit; }
+
+.card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; }
+.card { background: var(--surface); border-radius: 14px; padding: 1rem; box-shadow: 0 6px 18px rgba(0,0,0,0.06); }
+.section { margin-bottom: 1.5rem; }
+.form { display: grid; gap: .75rem; max-width: 360px; }
+input, button { padding: .7rem; border-radius: 10px; border: 1px solid #ddd; }
+button { background: var(--primary); color: white; border: none; cursor: pointer; }
+.table { width: 100%; border-collapse: collapse; background: white; }
+.table th, .table td { border: 1px solid #eee; padding: .6rem; text-align: left; }
