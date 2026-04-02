@@ -8,12 +8,12 @@ const links = [
   ['Admin', '/admin/login']
 ];
 
-export default function Layout({ children, title = 'FoodiesZenith' }) {
+export default function Layout({ children, title = 'FoodiesZenith', subtitle = '' }) {
   return (
     <div className="shell">
       <header className="topbar">
         <div className="brand">FoodiesZenith</div>
-        <nav>
+        <nav className="nav">
           {links.map(([label, href]) => (
             <Link key={href} href={href} className="navlink">
               {label}
@@ -22,7 +22,10 @@ export default function Layout({ children, title = 'FoodiesZenith' }) {
         </nav>
       </header>
       <main>
-        <h1>{title}</h1>
+        <section className="hero">
+          <h1>{title}</h1>
+          {subtitle ? <p className="lead">{subtitle}</p> : null}
+        </section>
         {children}
       </main>
     </div>

@@ -60,6 +60,7 @@ db = {
     "categories": [
         {"id": "c1", "name": "Appetisers", "description": "Start light", "order": 1},
         {"id": "c2", "name": "Mains", "description": "Chef specials", "order": 2},
+        {"id": "c3", "name": "Desserts", "description": "Sweet finishes", "order": 3},
     ],
     "items": [
         {
@@ -86,15 +87,38 @@ db = {
             "created_at": datetime.utcnow().isoformat(),
             "updated_at": datetime.utcnow().isoformat(),
         },
+        {
+            "id": "m3",
+            "category_id": "c3",
+            "name": "Saffron Tres Leches",
+            "description": "Cardamom milk sponge with pistachio dust",
+            "price": 349,
+            "image_url": "",
+            "dietary_flags": {"vegetarian": True, "vegan": False, "gluten_free": False, "spice_level": 0},
+            "available": True,
+            "created_at": datetime.utcnow().isoformat(),
+            "updated_at": datetime.utcnow().isoformat(),
+        },
     ],
     "restaurant_info": {
         "name": "FoodiesZenith",
         "address": "12 Gourmet Street, Bengaluru",
         "phone": "+91 90000 12345",
         "email": "hello@foodieszenith.com",
-        "hours": {"monday": "10:00-22:00", "tuesday": "10:00-22:00", "sunday": "10:00-23:00"},
+        "hours": {
+            "monday": "10:00-22:00",
+            "tuesday": "10:00-22:00",
+            "wednesday": "10:00-22:00",
+            "thursday": "10:00-22:00",
+            "friday": "10:00-23:00",
+            "saturday": "10:00-23:00",
+            "sunday": "10:00-23:00",
+        },
         "story": "FoodiesZenith celebrates comforting plates with modern techniques.",
-        "social_links": {"instagram": "https://instagram.com/foodieszenith"},
+        "social_links": {
+            "instagram": "https://instagram.com/foodieszenith",
+            "x": "https://x.com/foodieszenith",
+        },
     },
 }
 
@@ -141,6 +165,13 @@ def refresh():
 @app.get("/menu")
 def get_menu(featured: bool = Query(default=False)):
     return grouped_menu(db["items"], featured=featured)
+
+
+@app.get("/menu/highlights")
+def menu_highlights(limit: int = Query(default=4, ge=1, le=12)):
+    available_items = [item for item in db["items"] if item["available"]]
+    ranked = sorted(available_items, key=lambda item: (item["price"], item["name"]))
+    return ranked[:limit]
 
 
 @app.get("/menu/categories")
@@ -203,20 +234,47 @@ def delete_item(item_id: str):
 @app.get("/menu/search")
 def search_menu(
     q: str = "",
+    category_id: Optional[str] = None,
     vegetarian: Optional[bool] = None,
     vegan: Optional[bool] = None,
     gluten_free: Optional[bool] = None,
+    available: Optional[bool] = None,
     spice_level: Optional[int] = None,
+    min_price: Optional[float] = None,
+    max_price: Optional[float] = None,
 ):
     results = db["items"]
     if q:
         results = [item for item in results if q.lower() in item["name"].lower() or q.lower() in item["description"].lower()]
+    if category_id:
+        results = [item for item in results if item["category_id"] == category_id]
     for key, value in [("vegetarian", vegetarian), ("vegan", vegan), ("gluten_free", gluten_free)]:
         if value is not None:
             results = [item for item in results if item["dietary_flags"].get(key) == value]
+    if available is not None:
+        results = [item for item in results if item["available"] == available]
     if spice_level is not None:
         results = [item for item in results if item["dietary_flags"].get("spice_level") == spice_level]
-    return results
+    if min_price is not None:
+        results = [item for item in results if item["price"] >= min_price]
+    if max_price is not None:
+        results = [item for item in results if item["price"] <= max_price]
+    return sorted(results, key=lambda item: item["price"])
+
+
+@app.get("/dashboard/summary")
+def dashboard_summary():
+    items = db["items"]
+    available_items = [item for item in items if item["available"]]
+    avg_ticket = round(sum(item["price"] for item in available_items) / max(1, len(available_items)), 2)
+    return {
+        "categories": len(db["categories"]),
+        "total_items": len(items),
+        "available_items": len(available_items),
+        "unavailable_items": len(items) - len(available_items),
+        "avg_ticket": avg_ticket,
+        "last_updated": datetime.utcnow().isoformat(),
+    }
 
 
 @app.get("/qr/menu")
@@ -249,6 +307,7 @@ def get_reviews():
     return [
         {"name": "Aarav", "rating": 5, "comment": "Excellent service and quick QR menu flow."},
         {"name": "Maya", "rating": 5, "comment": "Great vegan options and clear labels."},
+        {"name": "Reyansh", "rating": 4, "comment": "Loved the seasonal desserts and fast seating."},
     ]
 
 
@@ -261,9 +320,11 @@ def purchase_giftcard(amount: float, sender_name: str, sender_email: EmailStr, r
         "sender_email": sender_email,
         "recipient_email": recipient_email,
         "message": message,
+        "issued_at": datetime.utcnow().isoformat(),
+        "status": "active",
     }
 
 
 @app.get("/giftcards/{code}")
-def validate_giftcard(code: str):
-    return {"code": code, "status": "active", "remaining_balance": 1000}
+def get_giftcard(code: str):
+    return {"code": code, "status": "active", "remaining": 1200}

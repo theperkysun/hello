@@ -10,9 +10,9 @@ export async function getServerSideProps() {
 export default function QrPage({ qr }) {
   return (
     <AdminGuard>
-      <Layout title="QR Code">
-        <div dangerouslySetInnerHTML={{ __html: qr }} />
-        <p>Print this QR and place it on tables and storefront.</p>
+      <Layout title="QR Code" subtitle="Print-ready code for table tents and storefront signage.">
+        <div className="card" dangerouslySetInnerHTML={{ __html: qr }} />
+        <p className="meta">Recommendation: laminate and place at all dine-in touchpoints.</p>
       </Layout>
     </AdminGuard>
   );
