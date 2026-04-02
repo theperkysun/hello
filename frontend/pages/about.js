@@ -9,12 +9,12 @@ export async function getStaticProps() {
 
 export default function About({ info }) {
   return (
-    <Layout title="About FoodiesZenith">
+    <Layout title="About FoodiesZenith" subtitle="Built for memorable meals and repeat guests.">
       <p>{info.story}</p>
       <ul>
-        <li>Farm-to-table ingredients</li>
-        <li>Comfort food with modern flavors</li>
-        <li>Inclusive options for every diet</li>
+        <li>Farm-to-table ingredients and predictable quality.</li>
+        <li>Comfort food with globally inspired modern flavors.</li>
+        <li>Inclusive options for vegetarian, vegan, and gluten-aware dining.</li>
       </ul>
     </Layout>
   );

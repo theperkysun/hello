@@ -9,16 +9,21 @@ export async function getStaticProps() {
 
 export default function Contact({ info }) {
   return (
-    <Layout title="Contact">
-      <p>{info.address}</p>
-      <p>{info.phone}</p>
-      <p>{info.email}</p>
+    <Layout title="Contact" subtitle="Reservations, catering, and private events.">
+      <div className="card">
+        <p><strong>Address:</strong> {info.address}</p>
+        <p><strong>Phone:</strong> {info.phone}</p>
+        <p><strong>Email:</strong> {info.email}</p>
+      </div>
       <h2>Hours</h2>
-      <ul>
+      <div className="card-grid">
         {Object.entries(info.hours).map(([day, value]) => (
-          <li key={day}>{day}: {value}</li>
+          <article key={day} className="card">
+            <strong>{day}</strong>
+            <p>{value}</p>
+          </article>
         ))}
-      </ul>
+      </div>
     </Layout>
   );
 }

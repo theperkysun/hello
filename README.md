@@ -31,7 +31,8 @@ NEXT_PUBLIC_API_URL=http://localhost:8000 npm run dev
 ## Implemented API endpoints
 
 - Auth: `/auth/login`, `/auth/register`, `/auth/refresh`
-- Menu: `/menu`, `/menu/categories`, `/menu/items/{id}`, `/menu/search`
+- Menu: `/menu`, `/menu/highlights`, `/menu/categories`, `/menu/items/{id}`, `/menu/search`
 - QR: `/qr/menu`
 - Restaurant: `/restaurant/info`
+- Admin: `/dashboard/summary`
 - Additional: `/reviews`, `/giftcards/purchase`, `/giftcards/{code}`
